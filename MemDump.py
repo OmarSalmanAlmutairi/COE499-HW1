@@ -1,5 +1,6 @@
 import mmap
 import os
+import subprocess
 
 def dump_physical_memory(filename):
     """Dumps the physical memory to a file.
@@ -9,6 +10,18 @@ def dump_physical_memory(filename):
     """
 
     try:
+        # Check SELinux status and temporarily disable it if necessary
+        selinux_status = subprocess.check_output(["getenforce"])
+        if selinux_status.decode().strip() == "Enforcing":
+            print("Disabling SELinux temporarily...")
+            subprocess.check_output(["setenforce", "0"])
+
+        # Load the mem module if not already loaded
+        modules = subprocess.check_output(["lsmod"])
+        if "mem" not in modules.decode():
+            print("Loading mem module...")
+            subprocess.check_output(["modprobe", "mem"])
+
         # Open /dev/mem for reading
         mem_file = os.open("/dev/mem", os.O_RDONLY)
 
