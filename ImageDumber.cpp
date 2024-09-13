@@ -57,7 +57,7 @@ void dumpAsRaw(const vector<unsigned char>& pixels, const BMPHeader& header) {
 }
 
 int main() {
-    string filename = "your_image.bmp";
+    string filename = "COE499.bmp";
     vector<unsigned char> pixels;
     BMPHeader header;
 
