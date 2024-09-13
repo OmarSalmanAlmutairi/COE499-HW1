@@ -44,8 +44,20 @@ bool readBMP(const string& filename, vector<unsigned char>& pixels, BMPHeader& h
     return true;
 }
 
+void dumpAsRaw(const vector<unsigned char>& pixels, const BMPHeader& header) {
+    string rawFilename = "raw_image.bin";
+    ofstream rawFile(rawFilename, ios::binary);
+    if (!rawFile.is_open()) {
+        cerr << "Error creating raw file: " << rawFilename << endl;
+        return;
+    }
+
+    rawFile.write(reinterpret_cast<const char*>(pixels.data()), pixels.size());
+    cout << "Raw image dumped to: " << rawFilename << endl;
+}
+
 int main() {
-    string filename = "COE499.bmp";
+    string filename = "your_image.bmp";
     vector<unsigned char> pixels;
     BMPHeader header;
 
@@ -53,9 +65,9 @@ int main() {
         cout << "Image loaded successfully!" << endl;
         cout << "Width: " << header.biWidth << endl;
         cout << "Height: " << header.biHeight << endl;
-
-        // Now you have the pixels in the 'pixels' vector
-        // You can process or manipulate the pixels as needed
+        cout << "Bits per pixel: " << header.biBitCount << endl;
+        // ... other header information as needed ...
+        dumpAsRaw(pixels, header);
     } else {
         cerr << "Error loading image." << endl;
     }
